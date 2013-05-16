@@ -4,6 +4,14 @@ class SecureController {
 
 	@Secured(['ROLE_ADMIN'])
     def index() {
-		render 'Secure access only'
+		if (isLoggedIn()) {
+			String username = getPrincipal().username
+			render 'LOGGED IN: YES: Welcome ' + username
+		}else{
+			redirect(controller:"Login")
+			return false;
+		}
+	 
+		
 	}
 }
