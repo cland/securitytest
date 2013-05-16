@@ -1,6 +1,8 @@
 import com.testapp.Person
 import com.testapp.Role
-import com.testapp.PersonRole
+import com.testapp.PersonRole 
+
+//Just a test
 
 class BootStrap {
 
