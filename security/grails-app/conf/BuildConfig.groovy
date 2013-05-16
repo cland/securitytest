@@ -60,5 +60,11 @@ grails.project.dependency.resolution = {
 
         compile ':cache:1.0.1'
 		compile ':spring-security-core:1.2.7.3'
+		compile ":spring-security-acl:1.1.1"
+		compile ":spring-security-ui:0.2"
+		compile ":famfamfam:1.0.1"
+		compile ":mail:1.0.1"
+		compile ":jquery-ui:1.8.24"
+		
     }
 }
