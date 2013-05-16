@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+  <testsuite errors="1" failures="0" hostname="Jay-PC" id="0" name="UserControllerTests" package="racetrack" tests="1" time="0.03" timestamp="2013-05-15T21:13:07">
+      <properties />
+
+      <testcase classname="racetrack.UserControllerTests" name="initializationError" time="0.029">
+          <error message="Method setUp() should be public" type="java.lang.Exception">java.lang.Exception: Method setUp() should be public
+</error>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from initializationError--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from initializationError--
+]]></system-err>
+
+  </testsuite>
+</testsuites>
