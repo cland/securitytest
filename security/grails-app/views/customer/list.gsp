@@ -29,7 +29,7 @@
 
 <div style="margin-top:5px">
   <input class="ui-corner-all" id="btnAdd" type="button" value="Add Record"/>
-  <input class="ui-corner-all" id="btnEdit" type="button" value="Edit Selected Record"/>
+  <!--  input class="ui-corner-all" id="btnEdit" type="button" value="Edit Selected Record"/ -->
   <input class="ui-corner-all" id="btnDelete" type="button" value="Delete Selected Record"/>
 </div>		
 		<!-- table tag will hold our grid -->
@@ -42,10 +42,11 @@
   $(document).ready(function () {
 	// set on click events for non toolbar buttons
       $("#btnAdd").click(function(){
-        $("#customer_list").jqGrid("editGridRow","new",
-           {addCaption:'Create New Customer',
-           afterSubmit:afterSubmitEvent,
-           savekey:[true,13]});
+        $("#customer_list").jqGrid("editGridRow",
+                "new",
+                {addCaption:'Create New Customer', afterSubmit:afterSubmitEvent,savekey:[true,13]}
+        );
+        
       });
 
       $("#btnEdit").click(function(){
@@ -82,7 +83,7 @@
         {name:'age', editable:true,editoptions:{size:3},editrules:{required:true,integer:true}},
         {name:'emailAddress', editable:true,editoptions:{size:30},editrules:{required:true,email:true}},
         {name:'id',hidden:true},
-        {name:'act',index:'act', width:75,sortable:false}
+        {name:'act',index:'act', width:120,sortable:false,search:false}
      ],
      rowNum:2,
      rowList:[1,2,3,4],
@@ -99,9 +100,10 @@
         for(var i=0;i < ids.length;i++)
             { 
             	var cl = ids[i]; 
-	            be = "<input style='height:22px;width:40px;' type='button' value='Edit' onclick=\"jQuery('#customer_list').editRow('"+cl+"');\" />"; 
-	            se = "<input style='height:22px;width:40px;' type='button' value='Save' onclick=\"jQuery('#customer_list').saveRow('"+cl+"');\" />"; 
-	            ce = "<input style='height:22px;width:40px;' type='button' value='Cancel' onclick=\"jQuery('#customer_list').restoreRow('"+cl+"');\" />"; 
+	            be = "<input style='height:22px;width:42px;' type='button' value='Edit' onclick=\"jQuery('#customer_list').editRow('"+cl+"');\" />"; 
+	            se = "<input style='height:22px;width:42px;' type='button' value='Save' onclick=\"jQuery('#customer_list').saveRow('"+cl+"');\" />"; 
+	            ce = "<input style='height:22px;width:42px;' type='button' value='Cancel' onclick=\"jQuery('#customer_list').restoreRow('"+cl+"');\" />";
+	             
 	            jQuery("#customer_list").jqGrid('setRowData',ids[i],{act:be+se+ce}); 
             }
     } 
@@ -109,9 +111,10 @@
             {add:false,edit:false,del:false,search:false,refresh:true}, // which buttons to show?
             {closeAfterEdit:true, afterSubmit:afterSubmitEvent,savekey:[true,13]},         // edit options
             {addCaption:'Create New Customer',afterSubmit:afterSubmitEvent,savekey:[true,13],closeAfterEdit:false},  // add options            
-            {}          // delete options
+           {}          // delete options
         );
     $("#customer_list").jqGrid('filterToolbar',{autosearch:true});
+   
   });  
 // ]]>
   function afterSubmitEvent(response, postdata) {
