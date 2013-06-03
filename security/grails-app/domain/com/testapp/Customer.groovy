@@ -8,8 +8,13 @@ class Customer {
     emailAddress(nullable:true)
   }
 
+	static hasMany = [invoices:Invoice]
   String firstName
   String lastName
   Integer age
   String emailAddress
+  
+  String toString(){
+	  return "${firstName} ${lastName}"
+  }
 }

@@ -59,6 +59,17 @@
 				</li>
 				</g:if>
 			
+				<g:if test="${customerInstance?.invoices}">
+				<li class="fieldcontain">
+					<span id="invoices-label" class="property-label"><g:message code="customer.invoices.label" default="Invoices" /></span>
+					
+						<g:each in="${customerInstance.invoices}" var="i">
+						<span class="property-value" aria-labelledby="invoices-label"><g:link controller="invoice" action="show" id="${i.id}">${i?.encodeAsHTML()}</g:link></span>
+						</g:each>
+					
+				</li>
+				</g:if>
+			
 			</ol>
 			<g:form>
 				<fieldset class="buttons">

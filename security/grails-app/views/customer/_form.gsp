@@ -34,3 +34,20 @@
 	<g:textField name="emailAddress" value="${customerInstance?.emailAddress}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: customerInstance, field: 'invoices', 'error')} ">
+	<label for="invoices">
+		<g:message code="customer.invoices.label" default="Invoices" />
+		
+	</label>
+	
+<ul class="one-to-many">
+<g:each in="${customerInstance?.invoices?}" var="i">
+    <li><g:link controller="invoice" action="show" id="${i.id}">${i?.encodeAsHTML()}</g:link></li>
+</g:each>
+<li class="add">
+<g:link controller="invoice" action="create" params="['customer.id': customerInstance?.id]">${message(code: 'default.add.label', args: [message(code: 'invoice.label', default: 'Invoice')])}</g:link>
+</li>
+</ul>
+
+</div>
+
