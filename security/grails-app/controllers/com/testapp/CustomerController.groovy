@@ -206,4 +206,20 @@ class CustomerController {
 
 		render response as JSON
 	} //end jq_edit_customer
+	
+	def jq_invoice_list = {
+		println(params)
+		def invoices = Invoice.createCriteria().list() {
+			eq "customer.id", params.id as long
+			order('invoiceNo','asc')
+		}
+		
+		def jsonCells = invoices.collect {
+			[cell: [it.invoiceNo,
+					it.amount,					
+				], id: it.id]
+		}
+		def jsonData= [rows: jsonCells]
+		render jsonData as JSON
+	}
 } //end class

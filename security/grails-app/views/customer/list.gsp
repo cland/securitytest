@@ -75,6 +75,7 @@
       url:'jq_customer_list',
       editurl:'jq_edit_customer',
       width:850,
+      height:"100%",
       datatype: "json",
       colNames:['First Name','Last Name','Age','Email Address','id','Actions'],
       colModel:[
@@ -94,6 +95,9 @@
     cellEdit:true,
     cellsubmit: 'remote',
     cellurl:'jq_edit_customer',
+    subGrid : true,
+    subGridUrl : 'jq_invoice_list',
+    subGridModel: [{name:['Inv Number','Amount'],width:[100,100]}],
     gridComplete: function(){ 
         var ids = jQuery("#customer_list").jqGrid('getDataIDs'); 
         
