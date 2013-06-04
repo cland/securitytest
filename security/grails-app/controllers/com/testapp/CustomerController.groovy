@@ -14,7 +14,10 @@ class CustomerController {
 		params.max = Math.min(max ?: 10, 100)
 		[customerInstanceList: Customer.list(params), customerInstanceTotal: Customer.count()]
 	}
-
+	def subgrid(Integer max) {
+		params.max = Math.min(max ?: 10, 100)
+		[customerInstanceList: Customer.list(params), customerInstanceTotal: Customer.count()]
+	}
 	def create() {
 		[customerInstance: new Customer(params)]
 	}
@@ -144,6 +147,7 @@ class CustomerController {
 	} //end def
 
 	def jq_edit_customer = {
+		println(params)
 		def customer = null
 		def message = ""
 		def state = "FAIL"
@@ -175,7 +179,7 @@ class CustomerController {
 					//customer = Customer.get(params.id)
 					if (customer) {
 						// delete customer
-						//customer.delete()
+						customer.delete()
 						message = "${message} ${i+1}) Customer  ${customer.firstName} ${customer.lastName} Deleted. "
 						state = "OK"
 					}else{
@@ -208,7 +212,7 @@ class CustomerController {
 	} //end jq_edit_customer
 	
 	def jq_invoice_list = {
-		println(params)
+		//println(params)
 		def invoices = Invoice.createCriteria().list() {
 			eq "customer.id", params.id as long
 			order('invoiceNo','asc')
@@ -221,5 +225,72 @@ class CustomerController {
 		}
 		def jsonData= [rows: jsonCells]
 		render jsonData as JSON
-	}
+	} //end list invoice
+	def jq_edit_invoice = {
+		println(params)
+		def invoice = null
+		def message = ""
+		def state = "FAIL"
+		def id
+
+		// determine our action
+		switch (params.oper) {
+			case 'add':
+			// add instruction sent
+			params.put("customer.id", params.custid);
+			//def customer = Customer.get(params.custid)
+				invoice = new Invoice(params)
+				if (! invoice.hasErrors() && invoice.save()) {
+					message = "Invoice  ${invoice.toString()}  Added"
+					id = invoice.id
+					state = "OK"
+				} else {
+					message = "Could Not Add Invoice"
+					println(invoice.errors)
+				}
+
+				break;
+			case 'del':
+			// check customer exists
+			//println(params)
+				def idlist = params.list("id")
+
+				idlist = JSON.parse(idlist.toString())
+
+				for(int i=0;i<idlist.size();i++){
+					invoice = Invoice.get(idlist[i] as Long)
+					//invoice = Invoice.get(params.id)
+					if (invoice) {
+						// delete invoice
+						//invoice.delete()
+						message = "${message} ${i+1}) Invoice  ${invoice.invoiceNo} amount: ${invoice.amount} Deleted. "
+						state = "OK"
+					}else{
+					message = "${message} ${i+1}) failed to delete invoice with id ${idlist[i]}. "
+					state = "fail"
+					}
+				}//end for loop
+				break;
+			default:
+			// edit action
+			// first retrieve the customer by its ID
+				invoice = Invoice.get(params.id)
+				if (invoice) {
+					// set the properties according to passed in parameters
+					invoice.properties = params
+					if (! invoice.hasErrors() && invoice.save()) {
+						message = "Invoice  ${invoice.toString()} Updated"
+						id = invoice.id
+						state = "OK"
+					} else {
+						message = "Could Not Update invoice"
+					}
+				}
+				break;
+		}//end switch statement
+
+		def response = [message:message,state:state,id:id]
+
+		render response as JSON
+	} //end edit invoice
 } //end class
