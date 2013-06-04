@@ -252,7 +252,7 @@ class CustomerController {
 				break;
 			case 'del':
 			// check customer exists
-			//println(params)
+			
 				def idlist = params.list("id")
 
 				idlist = JSON.parse(idlist.toString())
@@ -262,7 +262,7 @@ class CustomerController {
 					//invoice = Invoice.get(params.id)
 					if (invoice) {
 						// delete invoice
-						//invoice.delete()
+						invoice.delete()
 						message = "${message} ${i+1}) Invoice  ${invoice.invoiceNo} amount: ${invoice.amount} Deleted. "
 						state = "OK"
 					}else{

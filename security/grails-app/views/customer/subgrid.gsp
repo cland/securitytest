@@ -7,13 +7,23 @@
 		<g:set var="entityName" value="${message(code: 'customer.label', default: 'Customer')}" />
 		<title><g:message code="default.list.label" args="[entityName]" /></title>
 <link rel="stylesheet" href="${resource(dir:'css',file:'ui.jqgrid.css')}" />
-<link rel="stylesheet" href="${resource(dir:'css/redmond',file:'jquery-ui-1.9.1.custom.min.css')}" />
+<link rel="stylesheet" href="${resource(dir:'css/south-street',file:'jquery-ui-1.10.3.custom.min.css')}" />
 <g:javascript library="jquerymin"/>
 <g:javascript library="jqueryuilatest"/>
 <g:javascript library="jquerygridlocale"/>
 <g:javascript library="jquerygrid"/>
 
-
+<style>
+.ui-jqgrid .ui-jqgrid-htable th div {
+    height:auto;
+    overflow:hidden;
+    padding-right:4px;
+    padding-top:2px;
+    position:relative;
+    vertical-align:text-top;
+    white-space:normal !important;
+}
+</style>
 
 
 	</head>
@@ -28,14 +38,19 @@
 		<div id='message' class="message" style="display:none;"></div>
 
 <div style="margin-top:5px">
-  <input class="ui-corner-all" id="btnAdd" type="button" value="Add Record"/>
-  <!--  input class="ui-corner-all" id="btnEdit" type="button" value="Edit Selected Record"/ -->
-  <input class="ui-corner-all" id="btnDelete" type="button" value="Delete Selected Record"/>
-</div>		
+  <!-- input class="ui-corner-all" id="btnAdd" type="button" value="Add Record"/ -->
+  <!-- input class="ui-corner-all" id="btnEdit" type="button" value="Edit Selected Record"/ -->
+  <!-- input class="ui-corner-all" id="btnDelete" type="button" value="Delete Selected Record"/ -->
+</div>
+
+<div id="myGrid" style="padding:5px;">		
 		<!-- table tag will hold our grid -->
 <table id="customer_list" class="scroll jqTable" cellpadding="0" cellspacing="0"></table>
 <!-- pager will hold our paginator -->
 <div id="customer_list_pager" class="scroll" style="text-align:center;"></div>
+</div>
+
+
 
 <script type="text/javascript">// <![CDATA[
   /* when the page has finished loading.. execute the follow */
@@ -75,7 +90,7 @@
     jQuery("#customer_list").jqGrid({
       url:'jq_customer_list',
       editurl:'jq_edit_customer',
-      width:850,
+      autowidth: true,
       height:"100%",
       datatype: "json",
       colNames:['First Name','Last Name','Age','Email Address','id','Actions'],
@@ -85,7 +100,7 @@
         {name:'age', editable:true,editoptions:{size:3},editrules:{required:true,integer:true},edittype:"select",formatter:'select', editoptions:{value:"20:20;30:30;35:35;40:40"}},
         {name:'emailAddress', editable:true,editoptions:{size:30},editrules:{required:true,email:true}},
         {name:'id',hidden:true},
-        {name:'act',index:'act', width:160,sortable:false,search:false}
+        {name:'act',index:'act', width:180,sortable:false,search:false}
      ],
      rowNum:2,
      rowList:[1,2,3,4],
@@ -93,7 +108,7 @@
     pager: jQuery('#customer_list_pager'),
     viewrecords: true,
     gridview: true,
-    cellEdit:true,
+    cellEdit:false,
     cellsubmit: 'remote',
    	cellurl:'jq_edit_customer',
    subGridRowExpanded: function(subgrid_id,row_id){
@@ -109,16 +124,27 @@
 		   url:"jq_invoice_list",
 		   editurl:'jq_edit_invoice',
 		   datatype:"json",
-		   colNames:['Invoice Number','Amount','<input type="button" name="Add_Invoice" onClick="addRow(\''+row_id+'\',\''+subgrid_table_id+'\');" id="inv_add" value="Add Invoice"/>','Customer Id'],
-		   colModel:[ {name:'invoiceNo', editable:true,width:100,editrules:{required:true},align:'right'},
-		              {name:'amount', editable:true,width:100,editrules:{required:true},align:'left'},{sortable:false},
-		              {name:'custid',index:'custid',editable:true, width:160,sortable:false,search:false,editoptions:{defaultValue:row_id}}],
+		   colNames:['Invoice Number','Amount',' <input type="button" name="Add_Invoice" onClick="addRow(\''+row_id+'\',\''+subgrid_table_id+'\');" id="inv_add" value="Add Invoice"/>','Customer Id'],
+		   colModel:[ {name:'invoiceNo', editable:true,width:100,editrules:{required:true},align:'left'},
+		              {name:'amount', editable:true,width:100,editrules:{required:true},align:'right',sortable:false},
+		              {name:'subact',index:'subact', width:90,sortable:false,search:false,align:'center'},
+		              {name:'custid',index:'custid',editable:true, width:2,hidden:true,sortable:false,search:false,editoptions:{defaultValue:row_id}}
+		              ],		              
 		   //rowNum:2,
 		   pager:pager_id,
 		   sortname:'invoiceNo',
 		   sortorder:'asc',
 		   height:"100%",
-		   width:400,		   
+		   width:480,		
+		   gridComplete: function(){
+			   thisgrid = jQuery("#" + subgrid_table_id);
+			   var subids = thisgrid.jqGrid('getDataIDs');
+			   for(var i=0;i<subids.length;i++){
+				   	var _id =subids[i];
+				   	de = "<input style='height:22px;' type='button' value='Delete' onclick=\"deleteGridRow('"+_id+"','"+subgrid_table_id+"');\" />";		            
+		            thisgrid.jqGrid('setRowData',_id,{subact: de}); //be+se+ce+de forall actions
+				}
+			},  
 		   cellEdit:true,
 		    cellsubmit: 'remote',
 		   	cellurl:'jq_edit_invoice',
@@ -146,12 +172,12 @@
 	            se = "<input style='height:22px;width:42px;' type='button' value='Save' onclick=\"jQuery('#customer_list').saveRow('"+cl+"');\" />"; 
 	            ce = "<input style='height:22px;width:42px;' type='button' value='Cancel' onclick=\"jQuery('#customer_list').restoreRow('"+cl+"');clearSelection();\" />"; 
 	            de = "<input style='height:22px;width:82px;' type='button' value='Delete' onclick=\"deleteRow('"+cl+"');\" />";
-	            ad = "<input style='height:22px;width:82px;' type='button' value='Add Invoice' onclick=\"addRow('"+cl+"');\" />";
-	            jQuery("#customer_list").jqGrid('setRowData',ids[i],{act:ad+de}); //be+se+ce+de forall actions 
+	            
+	            jQuery("#customer_list").jqGrid('setRowData',ids[i],{act:be+se+ce+de}); //be+se+ce+de forall actions 
             }
     } 
     }).navGrid('#customer_list_pager',
-            {add:false,edit:false,del:false,search:false,refresh:true}, // which buttons to show?
+            {add:true,edit:false,del:false,search:false,refresh:true}, // which buttons to show?
             {closeAfterEdit:true, afterSubmit:afterSubmitEvent,savekey:[true,13],afterShowForm: centerForm},  // edit options
             {addCaption:'Create New Customer',afterSubmit:afterSubmitEvent,savekey:[true,13],closeAfterEdit:false},  // add options            
            {afterShowForm: centerForm}          // delete options
@@ -176,6 +202,16 @@
       var new_id = json.id
       return [success,message,new_id];
   }
+  function deleteGridRow(id,grid_id){
+	  grid = $("#" + grid_id)
+	  if (id!= null) grid.jqGrid('setSelection',id);
+	  var gr = grid.jqGrid('getGridParam','selrow'); //if multi use: 'selarrrow'
+      
+      if( gr != null && gr != "" )
+        grid.jqGrid('delGridRow',gr , {afterSubmit:afterSubmitEvent});
+      else
+        alert("Please Select Row to delete!");
+	  }
   function deleteRow(id){	  
 	  if (id!= null) jQuery('#customer_list').jqGrid('setSelection',id);
 	  var gr = $("#customer_list").jqGrid('getGridParam','selrow'); //if multi use: 'selarrrow'
