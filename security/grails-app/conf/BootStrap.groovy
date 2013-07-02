@@ -1,7 +1,4 @@
-import com.testapp.Customer
-import com.testapp.Person
-import com.testapp.Role
-import com.testapp.PersonRole 
+import com.testapp.* 
 
 //Just a test
 
@@ -41,11 +38,28 @@ class BootStrap {
 			emailAddress:'dave@somewhere.com'
 		  ).save()
 	
-		  new Customer(
+		  //customer and invoices
+		  def invoice1 = new Invoice(invoiceNo:"inv-ds-001",amount:87.03)
+		  def item1 = new InvoiceItem(name: "Laptop thinkpad")
+		  def item2 = new InvoiceItem(name: "Docking station")
+		  def customer = new Customer(
 			firstName:'Barney', lastName:'Rubble',
 			age:44,
 			emailAddress:'barney@somewhere.com'
-		  ).save()
+		  )		  	
+		  	  
+		  invoice1.addToItems(item1)
+		  invoice1.addToItems(item2)		 
+		  customer.addToInvoices(invoice1)		  
+		  customer.save(flush:true)
+		  if(customer.hasErrors()){
+			  println(customer.errors)
+		  }
+		 // invoice1.save()
+		 // if(invoice1.hasErrors()){
+		//	  println(invoice1.errors)
+		 // }
+		  
 		}
     }
     def destroy = {

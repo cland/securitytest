@@ -20,6 +20,7 @@ class InvoiceController {
     }
 
     def save() {
+		println(params)
         def invoiceInstance = new Invoice(params)
         if (!invoiceInstance.save(flush: true)) {
             render(view: "create", model: [invoiceInstance: invoiceInstance])
@@ -80,8 +81,6 @@ class InvoiceController {
         flash.message = message(code: 'default.updated.message', args: [message(code: 'invoice.label', default: 'Invoice'), invoiceInstance.id])
         redirect(action: "show", id: invoiceInstance.id)
     }
-	
-	
 
     def delete(Long id) {
         def invoiceInstance = Invoice.get(id)

@@ -17,4 +17,11 @@ modules = {
 	jqueryuilatest{
 		resource url: 'js/jquery-ui-1.9.1.custom.min.js', disposition: 'head'
 	}
+	PerfectWidgets{
+		resource url: 'js/PerfectWidgets.js', disposition: 'head'
+	}
+	mscorlib{
+		resource url: 'js/mscorlib.js', disposition: 'head'
+	}
+	
 }

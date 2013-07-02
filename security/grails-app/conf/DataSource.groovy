@@ -17,7 +17,7 @@ environments {
         dataSource {
             username = "root"
 			password = "Arthur43"
-            dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
+            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
             url = "jdbc:mysql://localhost:3306/security_dev?autoreconnect=true"
         }
     }
